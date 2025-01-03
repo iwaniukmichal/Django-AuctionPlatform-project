@@ -1,1 +1,2 @@
-"# Django-AuctionPlatform-project" 
+# Django AuctionPlatform
+Auction platform made in django
