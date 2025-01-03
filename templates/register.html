@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/login_register_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/password_validation.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <body>
+    <div class="container">
+        <h1>Register</h1>
+        <div class="register-form-container">
+            <form enctype="multipart/form-data" id="register-form" class="register-form" id method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div id="password-error" style="display: none; margin-bottom: 15px">Password must be at least 8 characters long and contain at least one uppercase letter.</div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+        <p class="pp">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+    </div>
+    </body>
+{% endblock %}

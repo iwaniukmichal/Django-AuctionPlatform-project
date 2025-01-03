@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/auction_item_detail_style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <body>
+    <div class="auction-detail">
+        <h1>{{ item.title }}</h1>
+
+        <div class="image">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+
+        <div class="info">
+            <p><strong>Description:</strong> {{ item.description }}</p>
+            <p><strong>Starting Bid:</strong> ${{ item.starting_bid }}</p>
+            <p><strong>Current Bid:</strong>
+                {% if item.current_bid %}
+                    ${{ item.current_bid }}
+                {% else %}
+                    No one bid yet.
+                {% endif %}
+            </p>
+            <p><strong>Ends At:</strong> {{ item.ends_at }}</p>
+            <p><strong>Category:</strong> {{ item.category.name }}</p>
+            {% if is_user_authenticated %}
+                <a href="{% url 'bid' item.id %}" class="bidding">Place Bid</a>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}" class="login"> log in</a> to place a bid.</p>
+            {% endif %}
+        </div>
+
+        <div class="comments">
+            <h2>Comments</h2>
+            <ul>
+                {% for comment in item.comments.all %}
+                    <li><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</li>
+                {% empty %}
+                    <li>No comments yet.</li>
+                {% endfor %}
+            </ul>
+
+            {% if is_user_authenticated %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Add Comment</button>
+                </form>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}" class="login"> log in</a> to add comment.</p>
+            {% endif %}
+        </div>
+    </div>
+    </body>
+{% endblock %}

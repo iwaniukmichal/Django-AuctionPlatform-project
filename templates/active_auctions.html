@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Active Auctions{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/filter_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auction_items_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/active_auctions_style.css' %}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/auto_submit_form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Active Auctions</h1>
+    </header>
+
+    <section class="filters">
+        <form id="filter-form" method="get">
+            <label for="sort_by">Sort by time:</label>
+            <select name="sort_by" id="sort_by" onchange="applyFilters()">
+                <option value="ends_at" {% if sort_by == 'ends_at' %}selected{% endif %}>Closest to End</option>
+                <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>New Auctions</option>
+            </select>
+
+            {% include 'inputs_for_filter.html' %}
+
+            <a href="{% url 'active_auctions' %}">Clear Filters</a>
+        </form>
+    </section>
+
+    <section class="auction-items-container">
+        {% if items %}
+            {% for item in items %}
+                <div class="auction-item">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                    {% endif %}
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.description|truncatewords:20 }}</p>
+                    <p><strong>Starting Bid:</strong> ${{ item.starting_bid }}</p>
+                    {% if item.current_bid %}
+                        <p><strong>Current Bid:</strong> ${{ item.current_bid }}</p>
+                    {% else %}
+                        <p><em>No bids yet</em></p>
+                    {% endif %}
+                    <p><strong>Ends At:</strong> {{ item.ends_at }}</p>
+                    <a href="{% url 'auction_item_detail' item.id %}" class="details">View Item details</a>
+
+                    {% if is_user_authenticated %}
+                        <a href="{% url 'bid' item.id %}" class="bidding">Place Bid</a>
+                    {% else %}
+                        <p>Please <a href="{% url 'login' %}" class="login"> log in</a> to place a bid.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No active auctions at the moment.</p>
+        {% endif %}
+    </section>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/profile_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auction_items_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/filter_style.css' %}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/auto_submit_form.js' %}" defer></script>
+    <script src="{% static 'js/form_activate.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+    <body>
+    <div class="profile-container">
+
+        <div class="my-bids-container">
+        
+            <h2>My Bids</h2>
+
+            <section class="filters">
+                <form id="filter-form" method="get">
+                    <label for="sort_by">Sort by time:</label>
+                    <select name="sort_by" id="sort_by" onchange="applyFilters()">
+                        <option value="ends_at" {% if sort_by == 'ends_at' %}selected{% endif %}>Closest to End</option>
+                        <option value="bid_time" {% if sort_by == 'bid_time' %}selected{% endif %}>Latest Bid</option>
+                    </select>
+
+                    {% include 'inputs_for_filter.html' %}
+
+                    <a href="{% url 'my_profile' %}">Clear Filters</a>
+                </form>
+            </section>
+
+            {% if user_bids %}
+                <ul class="bids-list">
+                    {% for bid in user_bids %}
+                        <li class="bid-item">
+                            <strong>{{ bid.auction_item.title }}</strong><br>
+                            Bid Amount: ${{ bid.amount }}<br>
+                            Current Bid: ${{ bid.auction_item.current_bid }}<br>
+                            Auction Ends: {{ bid.auction_item.ends_at|date:"F j, Y, g:i a" }}<br>
+                            <a href="{% url 'auction_item_detail' bid.auction_item.id %}">View
+                                Auction</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You have no active bids.</p>
+            {% endif %}
+        
+        </div>
+
+
+        <div class="my-items-container">
+        
+            <h2 id="my-items-title">My Auction Items</h2>
+            <div class="auction-items-container">
+                {% for item in items %}
+                    <div class="auction-item">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                        {% endif %}
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.description|truncatewords:20 }}</p>
+                        <p><strong>Starting Bid:</strong> ${{ item.starting_bid }}</p>
+                        {% if item.current_bid %}
+                            <p><strong>Current Bid:</strong> ${{ item.current_bid }}</p>
+                        {% else %}
+                            <p><em>No bids yet</em></p>
+                        {% endif %}
+                        <p><strong>Ends At:</strong> {{ item.ends_at }}</p>
+                        <a href="{% url 'auction_item_detail' item.id %}" class="details">View Item details</a>
+
+                    </div>
+                {% empty %}
+                    <p>You have not created any auction items yet.</p>
+                {% endfor %}
+            </div>
+        
+            <h2 id="add-item-title">Add New Auction Item</h2>
+            <div class="add-item-form-container">
+                <form id="auction-form" method="post" enctype="multipart/form-data" class="add-item-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Add Auction Item</button>
+                </form>
+            </div>
+        
+        </div>
+    </div>
+    </body>
+{% endblock %}
+
+
+
+    

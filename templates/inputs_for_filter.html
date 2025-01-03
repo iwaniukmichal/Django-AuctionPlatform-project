@@ -1,0 +1,8 @@
+<label for="category" class="filter-label">Category:</label>
+<input type="text" name="category" id="category" class="filter-input" placeholder="Category"
+       value="{{ request.GET.category }}">
+
+<label for="title" class="filter-label">Title:</label>
+<input type="text" name="title" id="title" class="filter-input" placeholder="Title" value="{{ request.GET.title }}">
+
+<button type="submit" class="filter-button">Apply Filters</button>

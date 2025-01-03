@@ -1,0 +1,5 @@
+#I used python 3.13.1
+
+Pillow==11.0.0
+Django==5.1.4
+

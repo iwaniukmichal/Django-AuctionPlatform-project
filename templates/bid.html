@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Bid on Item{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/bid_style.css' %}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/bid_validation.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+    <div id="bid-data" data-current-bid="{{ item.current_bid }}" data-starting-bid="{{ item.starting_bid }}"></div>
+
+    <div class="container">
+        <h1>Bid on {{ item.title }}</h1>
+
+        <p><strong>Current Bid:</strong>
+            {% if item.current_bid %}
+                ${{ item.current_bid }}
+            {% else %}
+                No one has bid yet.
+            {% endif %}
+        </p>
+        <p><strong>Ends at:</strong> {{ item.ends_at }}</p>
+
+        <div class="bidding">
+            <h2>Place a Bid</h2>
+            <form id="bidForm" method="post">
+                {% csrf_token %}
+                <label for="bid_amount">Your bid ($):</label>
+                <input type="number" id="bid_amount" name="bid_amount" step="0.01"
+                       value="{{ item.current_bid|floatformat:2 }}" required>
+                <p id="error-message" class="error-message"></p>
+                {% if success_bid %}
+                    <p id="success-message" class="success-message">
+                        {{ new_bid }} has been placed successfully!
+                    </p>
+                    <script>
+                        setTimeout(function () {    <!-- show message for 5s -->
+                            window.location.href = "{% url 'bid' item.id %}";
+                        }, 5000);
+                    </script>
+                {% endif %}
+                <button type="submit">Place Bid</button>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Welcome to Auction Platform</title>
+    
+    <link rel="stylesheet" href="{% static 'css/home_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animation_style.css' %}">
+    
+    <script src="{% static 'js/animation_js.js' %}" defer></script>
+</head>
+<body>
+<div class="page">
+    <div class="background" id="background"></div>
+
+
+    <header>
+        <h1>Welcome to the Auction Platform!</h1>
+    </header>
+
+    <section class="description">
+        <h2>What is Auction Platform?</h2>
+        <p>Our platform connects buyers and sellers from around the world, providing a seamless and secure auction
+            experience. Bid on unique items, rare collectibles, and exclusive opportunities, all from the comfort of
+            your home.</p>
+    </section>
+
+    <main class="content">
+        <div class="card">
+            <a href="{% url 'active_auctions' %}">
+                <h2>Current Auctions</h2>
+                <p>Browse currently active auctions and find unique items to bid on!</p>
+            </a>
+        </div>
+
+        <div class="card">
+            <a href="{% url 'my_profile' %}">
+                <h2>My Profile</h2>
+                <p>Manage your bids, track your wins, and create your own auctions.</p>
+            </a>
+        </div>
+
+    </main>
+
+</div>
+</body>
+</html>
+
